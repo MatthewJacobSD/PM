@@ -10,14 +10,13 @@ import java.security.SecureRandom; // Enchantment 1: Import SecureRandom for bet
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // Main class
 public class Library {
     // GUI components
     private JFrame frame;
     private JPasswordField passwordField;
-    private JButton generateButton;
-    private JButton passwordHistoryButton;
     private JLabel messageLabel;
     private JTextArea passwordHistoryArea;
 
@@ -48,12 +47,12 @@ public class Library {
         frame.add(passwordField);
 
         // Button to generate password
-        generateButton = new JButton("Generate Password");
+        JButton generateButton = new JButton("Generate Password");
         generateButton.addActionListener(new GeneratePasswordListener());
         frame.add(generateButton);
 
         // Button to view password history
-        passwordHistoryButton = new JButton("Password History");
+        JButton passwordHistoryButton = new JButton("Password History");
         passwordHistoryButton.addActionListener(new PasswordHistoryListener());
         frame.add(passwordHistoryButton);
 
@@ -77,12 +76,13 @@ public class Library {
 
     // Method to load password history from file
     private void loadPasswordHistory() {
-        try {
-            passwordHistory = Files.lines(Paths.get(PASSWORD_HISTORY_FILE)).collect(Collectors.toList());
+        try (Stream<String> lines = Files.lines(Paths.get(PASSWORD_HISTORY_FILE))) {
+            passwordHistory = lines.collect(Collectors.toList());
         } catch (IOException e) {
             System.err.println("Error loading password history: " + e.getMessage());
         }
     }
+
 
     // Method to save password history to file
     private void savePasswordHistory() {
